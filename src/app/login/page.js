@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import Input from '../components/input';
 import { login } from '../actions/login';
 import Swal from 'sweetalert2';
+import { validarEmail } from '../utils/funcoes';
 
 
 export default function LoginPage() {
@@ -17,6 +18,16 @@ export default function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+
+      if(!validarEmail(email)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro',
+          text: 'Email inválido',
+          confirmButtonColor: '#d33'
+        });
+        return;
+      }
       const resultado = await login(email, senha);
       if (resultado?.login?.success) {
         const token = resultado.login.token;
