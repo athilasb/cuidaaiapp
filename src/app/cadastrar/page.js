@@ -9,7 +9,6 @@ import { criarConta } from '../actions/criarConta';
 import Swal from 'sweetalert2';
 import { validarEmail } from '../utils/funcoes';
 
-
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -52,7 +51,6 @@ export default function LoginPage() {
     }
   };
 
-
   return (
     <div className="container flex-between flex-direction-column js-container">
       <div className="flex-between al-center w100">
@@ -60,7 +58,7 @@ export default function LoginPage() {
           <Icon icon="iconamoon:arrow-left-2-light" width="24" style={{ color: '#86868B' }} />
         </Link>
         <div className="title-header">CADASTRAR</div>
-        <a href="javascript:" className="btn-acao" onClick={() => handleCriarConta} >Finalizar</a>
+        <span></span>
       </div>
 
       <form className="flex-direction-column w100" onSubmit={handleCriarConta}>
@@ -76,6 +74,7 @@ export default function LoginPage() {
           value={senha}
           onChange={(e) => setSenha(e.target.value)}
         />
+        <button type="submit" className="btn-secondary">Cadastrar</button>
       </form>
 
       <div></div>
