@@ -18,13 +18,11 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       const resultado = await login(email, senha);
-      console.log('resultado:', resultado);
-
       if (resultado?.login?.success) {
         const token = resultado.login.token;
         Cookies.set('auth_token', token, { expires: 7 });
         router.push('/ia');
-        
+
       } else {
         Swal.fire({
           icon: 'error',
