@@ -60,7 +60,7 @@ export default function LoginPage() {
           <Icon icon="iconamoon:arrow-left-2-light" width="24" style={{ color: '#86868B' }} />
         </Link>
         <div className="title-header">CADASTRAR</div>
-        <a href="javascript:" className="btn-acao">Finalizar</a>
+        <a href="javascript:" className="btn-acao" onClick={() => handleCriarConta} >Finalizar</a>
       </div>
 
       <form className="flex-direction-column w100" onSubmit={handleCriarConta}>
@@ -76,7 +76,6 @@ export default function LoginPage() {
           value={senha}
           onChange={(e) => setSenha(e.target.value)}
         />
-        <button type="submit" className="btn-secondary">ENTRAR</button>
       </form>
 
       <div></div>
