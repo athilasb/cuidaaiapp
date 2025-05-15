@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import Input from '../components/input';
 import { criarConta } from '../actions/criarConta';
 import Swal from 'sweetalert2';
+import { validarEmail } from '../utils/funcoes';
 
 
 export default function LoginPage() {
@@ -17,6 +18,16 @@ export default function LoginPage() {
   const handleCriarConta = async (e) => {
     e.preventDefault();
     try {
+
+      if(!validarEmail(email)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Erro',
+          text: 'Email inválido',
+          confirmButtonColor: '#d33'
+        });
+        return;
+      }
       const resultado = await criarConta(email, senha);
 
       if (resultado?.login?.success) {
