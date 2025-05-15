@@ -24,19 +24,23 @@ export default function Home() {
   const slides = [
     {
       title: 'Acompanhe',
-      description: 'Acompanhe seus medicamentos, sintomas, hábitos e dados de saúde em um só lugar.'
+      description: 'Acompanhe seus medicamentos, sintomas, hábitos e dados de saúde em um só lugar.',
+      img: '/img/logo-cuida-ai.png'
     },
     {
       title: 'Lembre',
-      description: 'Receba lembretes inteligentes e registre tudo com uma IA que aprende com você.'
+      description: 'Receba lembretes inteligentes e registre tudo com uma IA que aprende com você.',
+      img: '/img/logo-cuida-ai.png'
     },
     {
       title: 'Compartilhe',
-      description: 'Compartilhe seus cuidados com quem cuida de você. Seja visto e compreendido.'
+      description: 'Compartilhe seus cuidados com quem cuida de você. Seja visto e compreendido.',
+      img: '/img/logo-cuida-ai.png'
     },
     {
       title: 'Armazene de forma segura',
-      description: 'Armazene seus exames e histórico médico em um só lugar, seguro e organizado.'
+      description: 'Armazene seus exames e histórico médico em um só lugar, seguro e organizado.',
+      img: '/img/logo-cuida-ai.png'
     }
   ];
 
@@ -57,38 +61,38 @@ export default function Home() {
   }, [slides.length]);
 
   return (
-    <div>
-      <div className={`splash ${splashShown ? 'fadeOut' : ''}`} style={{ textAlign: 'center', display: splashShown ? 'none' : 'flex' }}>
-        <h1>
-          <img src="/img/logo-cuida-ai.png" alt="" style={{ width: '90%' }} />
-        </h1>
-      </div>
-      <div className={`container flex-between flex-direction-column ${splashShown ? 'fadeIn' : ''}`} style={{ display: splashShown ? 'flex' : 'none' }}>
-        <div>
-          <div className="header">
-            <p><strong>Cuida AI</strong>, aonde sua <strong>saúde</strong> vai muito além de um <strong>lembrete</strong>.</p>
-          </div>
-
-          {slides.map((slide, index) => (
-            <div key={index} className={`slide js-slide ${currentSlide === index ? 'active' : ''}`}>
-              <div className="card">
-                <h3>{slide.title}</h3>
-                <p>{slide.description}</p>
-                <br />
-                <div className="box"></div>
-              </div>
+      <div>
+        <div className={`splash ${splashShown ? 'fadeOut' : ''}`} style={{ textAlign: 'center', display: splashShown ? 'none' : 'flex' }}>
+          <h1>
+            <img src="/img/logo-cuida-ai.png" alt="" style={{ width: '90%' }} />
+          </h1>
+        </div>
+        <div className={`container flex-between flex-direction-column ${splashShown ? 'fadeIn' : ''}`} style={{ display: splashShown ? 'flex' : 'none' }}>
+          <div>
+            <div className="header">
+              <p><strong>Cuida AI</strong>, aonde sua <strong>saúde</strong> vai muito além de um <strong>lembrete</strong>.</p>
             </div>
-          ))}
 
-          <div className="dots">
-            {dots}
+            {slides.map((slide, index) => (
+              <div key={index} className={`slide js-slide ${currentSlide === index ? 'active' : ''}`}>
+                <div className="card">
+                  <h3>{slide.title}</h3>
+                  <p>{slide.description}</p>
+                  <br />
+                  <div className="box"><img src="/img/logo-cuida-ai.png" alt="Logo Cuida AI" /></div>
+                </div>
+              </div>
+            ))}
+
+            <div className="dots">
+              {dots}
+            </div>
+          </div>
+          <div className="flex-direction-column w100">
+            <Link href="/cadastrar" className="btn-primary">Iniciar agora mesmo</Link>
+            <Link href="/login" className="btn-secondary">Já tenho uma conta</Link>
           </div>
         </div>
-        <div className="flex-direction-column w100">
-          <Link href="/cadastrar" className="btn-primary">Iniciar agora mesmo</Link>
-          <Link href="/login" className="btn-secondary">Já tenho uma conta</Link>
-        </div>
       </div>
-    </div>
   );
 }

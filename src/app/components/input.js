@@ -1,26 +1,36 @@
 // components/InputGroup.js
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Icon } from '@iconify/react'; // Supondo que você esteja usando iconify para ícones
+import { Icon } from '@iconify/react';
 
-const InputGroup = ({ placeholder, children, type }) => {
+const Input = ({ placeholder, children, type, value, onChange, name, ...rest }) => {
   const [senhaVisivel, setSenhaVisivel] = useState(false);
 
   const toggleSenha = () => {
     setSenhaVisivel(!senhaVisivel);
   };
 
+  // Define o tipo do input considerando o toggle para password
+  const inputType = type === 'password' && !senhaVisivel ? 'password' : 'text';
+
   return (
     <div className="input-group">
       <input
-        type={type === 'password' && !senhaVisivel ? 'password' : 'text'}
+        type={inputType}
         placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        name={name}
+        {...rest}
       />
       {type === 'password' && (
-        <button type="button" className="toggle-password" onClick={toggleSenha}>
-          <span id="icone-senha">
-            <Icon icon={senhaVisivel ? 'mdi-light:eye-off' : 'mdi-light:eye'} width="24" />
-          </span>
+        <button
+          type="button"
+          className="toggle-password"
+          onClick={toggleSenha}
+          aria-label={senhaVisivel ? "Esconder senha" : "Mostrar senha"}
+        >
+          <Icon icon={senhaVisivel ? 'mdi-light:eye-off' : 'mdi-light:eye'} width="24" />
         </button>
       )}
       {children}
@@ -28,14 +38,20 @@ const InputGroup = ({ placeholder, children, type }) => {
   );
 };
 
-InputGroup.propTypes = {
+Input.propTypes = {
   placeholder: PropTypes.string.isRequired,
   children: PropTypes.node,
-  type: PropTypes.string, // Pode ser 'email', 'text', 'password', etc.
+  type: PropTypes.string,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+  name: PropTypes.string,
 };
 
-InputGroup.defaultProps = {
-  type: 'email', // Tipo padrão do input
+Input.defaultProps = {
+  type: 'email',
+  value: '',
+  onChange: () => {},
+  name: '',
 };
 
-export default InputGroup;
+export default Input;
