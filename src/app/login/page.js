@@ -22,7 +22,6 @@ export default function LoginPage() {
         const token = resultado.login.token;
         Cookies.set('auth_token', token, { expires: 7 });
         router.push('/ia');
-
       } else {
         Swal.fire({
           icon: 'error',
