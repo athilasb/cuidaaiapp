@@ -51,6 +51,7 @@ export default function Home() {
       onClick={() => setCurrentSlide(index)}
     />
   ));
+  
 
   useEffect(() => {
     const intervalId = setInterval(() => {
