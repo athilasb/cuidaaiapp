@@ -24,23 +24,18 @@ export default function Home() {
   const slides = [
     {
       title: 'Acompanhe',
-      description: 'Acompanhe seus medicamentos, sintomas, hábitos e dados de saúde em um só lugar.',
-      img: '/img/logo-cuida-ai.png'
+      description: 'Acompanhe seus medicamentos, sintomas, hábitos e dados de saúde em um só lugar. Uma IA que te ajuda a se entender melhor.',
+      img: '/img/slide1.PNG'
     },
     {
       title: 'Lembre',
-      description: 'Receba lembretes inteligentes e registre tudo com uma IA que aprende com você.',
-      img: '/img/logo-cuida-ai.png'
+      description: 'Receba lembrets inteligentes e interativos. Registre tudo com um toque com uma IA que aprende com você.',
+      img: '/img/slide2.PNG'
     },
     {
       title: 'Compartilhe',
-      description: 'Compartilhe seus cuidados com quem cuida de você. Seja visto e compreendido.',
-      img: '/img/logo-cuida-ai.png'
-    },
-    {
-      title: 'Armazene de forma segura',
-      description: 'Armazene seus exames e histórico médico em um só lugar, seguro e organizado.',
-      img: '/img/logo-cuida-ai.png'
+      description: 'Compartilhe seus cuidados com quem cuida de você. Seu médico vai entender o que realmente importa. .',
+      img: '/img/slide3.PNG'
     }
   ];
 
@@ -80,7 +75,7 @@ export default function Home() {
                   <h3>{slide.title}</h3>
                   <p>{slide.description}</p>
                   <br />
-                  <div className="box"><img src="/img/logo-cuida-ai.png" alt="Logo Cuida AI" /></div>
+                  <div className="box"><img className="carrousel" src={slide.img} alt="Logo Cuida AI" /></div>
                 </div>
               </div>
             ))}

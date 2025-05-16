@@ -85,6 +85,10 @@ body {
   text-align: left;
 }
 
+.box img.carrousel {
+    width: 100%;
+}
+
 .card h3 {
   margin-bottom: 15px;
 }

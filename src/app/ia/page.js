@@ -19,20 +19,41 @@ function formatarData(dataString) {
   if (diffDias === 1) return `Ontem • ${horaMinuto}`;
   return `${data.toLocaleDateString('pt-BR')} • ${horaMinuto}`;
 }
+function formatarConteudo(texto) {
+  if (!texto) return null;
+
+  // Substitui **texto** por <strong>texto</strong>
+  const comNegrito = texto.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+  // Substitui quebras de linha por <br />
+  const comQuebrasDeLinha = comNegrito.replace(/\n/g, "<br />");
+
+  // Retorna como JSX seguro (React interpretará as tags HTML)
+  return <span dangerouslySetInnerHTML={{ __html: comQuebrasDeLinha }} />;
+}
 
 function listarMensagens({ role, content, data, loading }) {
-  return (
-    <div className={`msg ${role === "system" ? "from-system" : "from-user"}`}>
-      <div className="msg-time">{formatarData(data)}</div>
-      <div>
-        {loading ? (
-          <Icon icon="eos-icons:three-dots-loading" width="40" height="40" />
-        ) : (
-          content
-        )}
+
+  if(role == "function"){
+    return (
+      <></>
+    )
+  }else{
+     return (
+      <div className={`msg ${role === "system" ? "from-system" : "from-user"}`}>
+        <div>
+          {loading ? (
+            <Icon icon="eos-icons:three-dots-loading" width="40" height="40" />
+          ) : (
+            formatarConteudo(content)
+          )}
+        </div>
+          <br/>
+          <div className="msg-time">{formatarData(data)}</div>
       </div>
-    </div>
-  );
+    );
+  }
+ 
 }
 
 function scrollToBottom(smooth = true) {
