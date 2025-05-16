@@ -19,18 +19,27 @@ function formatarData(dataString) {
   if (diffDias === 1) return `Ontem • ${horaMinuto}`;
   return `${data.toLocaleDateString('pt-BR')} • ${horaMinuto}`;
 }
+function transformarContent(content) {
+  // Substitui tudo por "Olá"
+  // Se quiser manter a quantidade de "Olá" com base nas linhas, pode adaptar depois
+  const linhas = content
+    .replace(/<strong>|<\/strong>/gi, '') // remove tags <strong>
+    .replace(/<br\s*\/?>/gi, '\n')        // converte <br> para \n
+    .split('\n');                         // divide por linha
+
+  // Transforma cada linha em "Olá" e junta com <br>
+  return linhas.map(() => 'Olá').join('<br>');
+}
 
 function listarMensagens({ role, content, data, loading }) {
   return (
     <div className={`msg ${role === "system" ? "from-system" : "from-user"}`}>
       <div className="msg-time">{formatarData(data)}</div>
-      <div>
-        {loading ? (
-          <Icon icon="eos-icons:three-dots-loading" width="40" height="40" />
-        ) : (
-          content
-        )}
-      </div>
+      <div
+        dangerouslySetInnerHTML={{
+          __html: loading ? '<div><svg>...</svg></div>' : transformarContent(content),
+        }}
+      />
     </div>
   );
 }
