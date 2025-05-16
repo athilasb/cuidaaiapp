@@ -161,6 +161,14 @@ const Chat = () => {
         <div className="content">
           <div className="chat js-scrollChat">
             <div className="chat-message">
+              <div className={`msg from-user`}>
+                  <div>
+                      Olá! 👋 Eu sou a Dai, sua assistente de saúde aqui no <strong> Cuida Aí.</strong> <br></br>
+                      Antes de começarmos, <p>quero te conhecer melhor pra personalizar tudo direitinho, ok?</p> <br></br>
+
+                      Me conta primeiro: <strong>qual seu nome completo?</strong>
+                </div>
+              </div>
               {mensagens.map((msg, index) => (
                 <div key={index}>{listarMensagens(msg)}</div>
               ))}
