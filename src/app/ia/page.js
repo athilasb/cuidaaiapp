@@ -98,6 +98,7 @@ const Chat = () => {
         },200)
         Swal.close();
       } catch (error) {
+        Swal.close();
         console.error("Erro ao consultar mensagens:", error);
       }
     }
