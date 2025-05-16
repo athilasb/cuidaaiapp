@@ -19,27 +19,30 @@ function formatarData(dataString) {
   if (diffDias === 1) return `Ontem • ${horaMinuto}`;
   return `${data.toLocaleDateString('pt-BR')} • ${horaMinuto}`;
 }
-function transformarContent(content) {
-  // Substitui tudo por "Olá"
-  // Se quiser manter a quantidade de "Olá" com base nas linhas, pode adaptar depois
-  const linhas = content
-    .replace(/<strong>|<\/strong>/gi, '') // remove tags <strong>
-    .replace(/<br\s*\/?>/gi, '\n')        // converte <br> para \n
-    .split('\n');                         // divide por linha
+function formatarConteudo(texto) {
+  if (!texto) return null;
 
-  // Transforma cada linha em "Olá" e junta com <br>
-  return linhas.map(() => 'Olá').join('<br>');
+  // Substitui **texto** por <strong>texto</strong>
+  const comNegrito = texto.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+  // Substitui quebras de linha por <br />
+  const comQuebrasDeLinha = comNegrito.replace(/\n/g, "<br />");
+
+  // Retorna como JSX seguro (React interpretará as tags HTML)
+  return <span dangerouslySetInnerHTML={{ __html: comQuebrasDeLinha }} />;
 }
 
 function listarMensagens({ role, content, data, loading }) {
   return (
     <div className={`msg ${role === "system" ? "from-system" : "from-user"}`}>
       <div className="msg-time">{formatarData(data)}</div>
-      <div
-        dangerouslySetInnerHTML={{
-          __html: loading ? '<div><svg>...</svg></div>' : transformarContent(content),
-        }}
-      />
+      <div>
+        {loading ? (
+          <Icon icon="eos-icons:three-dots-loading" width="40" height="40" />
+        ) : (
+          formatarConteudo(content)
+        )}
+      </div>
     </div>
   );
 }
