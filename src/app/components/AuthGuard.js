@@ -20,6 +20,7 @@ export default function AuthGuard({ children }) {
       const sessaoValida = result?.login.success;
 
       if (!sessaoValida) {
+        Cookies.remove('auth_token');
         router.push('/login');
       }
     };
