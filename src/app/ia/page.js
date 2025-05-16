@@ -68,6 +68,7 @@ function scrollToBottom(smooth = true) {
 const Chat = () => {
   const [mensagens, setMensagens] = useState([]);
   const inputRef = useRef(null);
+  const [loadingEnvio, setLoadingEnvio] = useState(false);
 
   useEffect(() => {
     async function carregarMensagens() {
@@ -113,49 +114,46 @@ const Chat = () => {
   }
 }, [mensagens]);
 
-  const enviarMensagem = async (mensagemTexto) => {
-    const agora = new Date().toISOString();
+const enviarMensagem = async (mensagemTexto) => {
+  const agora = new Date().toISOString();
+  setLoadingEnvio(true); // Bloqueia o botão
 
-    // Adiciona a mensagem do usuário e o loading do sistema
-    setMensagens((prev) => [
-      ...prev,
-      { role: "user", content: mensagemTexto, data: agora },
-      { role: "system", content: "loading", data: agora, loading: true } // Mensagem temporária com flag
-    ]);
+  setMensagens((prev) => [
+    ...prev,
+    { role: "user", content: mensagemTexto, data: agora },
+    { role: "system", content: "loading", data: agora, loading: true }
+  ]);
 
-    const formData = new FormData();
-    const token = Cookies.get('auth_token') ?? "";
-    formData.append('token', token);
-    formData.append('mensage', mensagemTexto); // corrigido 'mensage' para 'mensagem'
+  const formData = new FormData();
+  const token = Cookies.get('auth_token') ?? "";
+  formData.append('token', token);
+  formData.append('mensage', mensagemTexto);
 
-    try {
-      const response = await fetch('https://infoadmdev.infodental.dental/infoservices/cuidaai/ia.php', {
-        method: 'POST',
-        body: formData
-      });
-      const data = await response.json();
+  try {
+    const response = await fetch('https://infoadmdev.infodental.dental/infoservices/cuidaai/ia.php', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await response.json();
 
-      if (data.success && data.mensagem) {
-        setMensagens((prev) => {
-          const novasMensagens = [...prev];
-
-          // Remove o último item (mensagem de loading)
-          novasMensagens.pop();
-
-          // Adiciona a mensagem real da IA
-          novasMensagens.push({
-            role: "system",
-            content: data.mensagem,
-            data: new Date().toISOString()
-          });
-
-          return novasMensagens;
+    if (data.success && data.mensagem) {
+      setMensagens((prev) => {
+        const novasMensagens = [...prev];
+        novasMensagens.pop(); // remove loading
+        novasMensagens.push({
+          role: "system",
+          content: data.mensagem,
+          data: new Date().toISOString()
         });
-      }
-    } catch (error) {
-      console.error("Erro ao enviar mensagem:", error);
+        return novasMensagens;
+      });
     }
-  };
+  } catch (error) {
+    console.error("Erro ao enviar mensagem:", error);
+  }
+
+  setLoadingEnvio(false); // Libera o botão
+};
 
 
   const handleEnviarMensagem = () => {
@@ -191,10 +189,17 @@ const Chat = () => {
           <div className="input-ia">
             <div className="input-area">
               <input type="text" placeholder="Mensagem Aqui" ref={inputRef} onKeyDown={(e) => {
+                if(loadingEnvio){
+                  return
+                }
                 if (e.key === "Enter") handleEnviarMensagem();
               }} />
-              <button onClick={handleEnviarMensagem}>
-                <Icon icon="ic:baseline-send" width="24" style={{ color: '#1c70f2' }} />
+              <button onClick={handleEnviarMensagem} disabled={loadingEnvio}>
+                {loadingEnvio ? (
+                  <Icon icon="eos-icons:three-dots-loading" width="24" style={{ color: '#1c70f2' }} />
+                ) : (
+                  <Icon icon="ic:baseline-send" width="24" style={{ color: '#1c70f2' }} />
+                )}
               </button>
             </div>
           </div>
