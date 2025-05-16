@@ -2,12 +2,21 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [splashShown, setSplashShown] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
+
+    const token = Cookies.get('auth_token') ?? "";
+    if (token) {
+      router.push('/ia');
+      return;
+    }
     const splashState = localStorage.getItem('splashShown');
     
     if (!splashState) {
