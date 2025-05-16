@@ -1,12 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { checarToken } from '../actions/checarToken';
 import Cookies from 'js-cookie';
 
 export default function AuthGuard({ children }) {
   const router = useRouter();
+  const [verificando, setVerificando] = useState(true);
+  const [sessaoValida, setSessaoValida] = useState(false);
 
   useEffect(() => {
     const verificarToken = async () => {
@@ -17,15 +19,24 @@ export default function AuthGuard({ children }) {
       }
 
       const result = await checarToken(token);
-      const sessaoValida = result?.login.success;
+      const valido = result?.login?.success;
 
-      if (!sessaoValida) {
+      if (!valido) {
+        Cookies.remove('auth_token');
         router.push('/login');
+        return;
       }
+
+      setSessaoValida(true);
+      setVerificando(false);
     };
 
     verificarToken();
-  }, []);
+  }, [router]);
 
-  return <>{children}</>;
+  if (verificando) {
+    return null; // ou um loading spinner se quiser
+  }
+
+  return <>{sessaoValida && children}</>;
 }
