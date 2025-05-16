@@ -27,10 +27,19 @@ export default function LoginPage() {
         });
         return;
       }
+      Swal.fire({
+        title: 'Carregando...',
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willOpen: () => {
+          Swal.showLoading();
+        }
+      });
       const resultado = await criarConta(email, senha);
 
       if (resultado?.login?.success) {
         const token = resultado.login.token;
+        Swal.close();
         Cookies.set('auth_token', token, { expires: 7 });
         router.push('/ia');
       } else {
@@ -40,6 +49,7 @@ export default function LoginPage() {
           text: resultado.error || 'Erro desconhecido',
           confirmButtonColor: '#d33'
         });
+        Swal.close();
       }
     } catch (error) {
       Swal.fire({
