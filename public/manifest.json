@@ -1,0 +1,62 @@
+{
+  "name": "CuidaAI - Cada Dia Importa",
+  "short_name": "CuidaAI",
+  "description": "Aplicativo de saúde e bem-estar com inteligência artificial",
+  "start_url": "/ia",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1c70f2",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/api/generate-icon?size=192",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/api/generate-icon?size=512",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/api/generate-icon?size=144",
+      "sizes": "144x144",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/api/generate-icon?size=96",
+      "sizes": "96x96",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/api/generate-icon?size=72",
+      "sizes": "72x72",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/api/generate-icon?size=48",
+      "sizes": "48x48",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["health", "lifestyle", "medical"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Nova Conversa",
+      "url": "/ia",
+      "description": "Iniciar nova conversa com a IA"
+    },
+    {
+      "name": "Perfil",
+      "url": "/ia_perfil",
+      "description": "Acessar perfil"
+    }
+  ]
+}
