@@ -7,8 +7,16 @@ const InstallPWA = () => {
   const [showInstallButton, setShowInstallButton] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [platform, setPlatform] = useState('');
+  const [showMobilePrompt, setShowMobilePrompt] = useState(false);
+  const [dismissedPrompt, setDismissedPrompt] = useState(false);
 
   useEffect(() => {
+    // Verificar se já foi dispensado anteriormente
+    const dismissed = localStorage.getItem('installPromptDismissed');
+    if (dismissed === 'true') {
+      setDismissedPrompt(true);
+    }
+    
     // Detectar plataforma
     const detectPlatform = () => {
       const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -33,6 +41,13 @@ const InstallPWA = () => {
         window.navigator.standalone === true) {
       setIsInstalled(true);
       return;
+    }
+    
+    // Mostrar prompt para mobile após 3 segundos (se não foi dispensado)
+    if ((platform === 'android' || platform === 'ios') && !dismissedPrompt) {
+      setTimeout(() => {
+        setShowMobilePrompt(true);
+      }, 3000);
     }
 
     // Registrar Service Worker
@@ -67,9 +82,16 @@ const InstallPWA = () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
-  }, []);
+  }, [platform, dismissedPrompt]);
 
+  const handleDismissPrompt = () => {
+    setShowMobilePrompt(false);
+    setDismissedPrompt(true);
+    localStorage.setItem('installPromptDismissed', 'true');
+  };
+  
   const handleInstallClick = async () => {
+    setShowMobilePrompt(false);
     if (!deferredPrompt) {
       // Para iOS, mostrar instruções
       if (platform === 'ios') {
@@ -136,54 +158,174 @@ const InstallPWA = () => {
     return null;
   }
 
-  // Para iOS, sempre mostrar o botão pois não há evento beforeinstallprompt
-  if (platform === 'ios' || showInstallButton) {
+  // Modal de prompt para mobile
+  if (showMobilePrompt && (platform === 'android' || platform === 'ios')) {
     return (
       <>
-        {/* Banner fixo no topo para mobile */}
-        {(platform === 'android' || platform === 'ios') && (
+        {/* Overlay */}
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          zIndex: 2000,
+          display: 'flex',
+          alignItems: 'flex-end',
+          animation: 'fadeIn 0.3s ease'
+        }}>
+          {/* Modal */}
           <div style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: '#1c70f2',
-            color: 'white',
-            padding: '10px 15px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            zIndex: 2000,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+            width: '100%',
+            backgroundColor: 'white',
+            borderRadius: '20px 20px 0 0',
+            padding: '25px',
+            boxShadow: '0 -4px 20px rgba(0,0,0,0.1)',
+            animation: 'slideUp 0.3s ease'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Icon icon={getIcon()} width="24" />
+            {/* Ícone e Título */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '15px',
+              marginBottom: '20px'
+            }}>
+              <div style={{
+                width: '60px',
+                height: '60px',
+                backgroundColor: '#e8f0fe',
+                borderRadius: '15px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <Icon icon="hugeicons:smartphone-01" width="30" style={{ color: '#1c70f2' }} />
+              </div>
               <div>
-                <div style={{ fontSize: '14px', fontWeight: '600' }}>
-                  {getInstallMessage()}
-                </div>
-                <div style={{ fontSize: '12px', opacity: 0.9 }}>
-                  Acesse offline e receba notificações
-                </div>
+                <h3 style={{
+                  margin: 0,
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  color: '#333'
+                }}>
+                  Instalar CuidaAI
+                </h3>
+                <p style={{
+                  margin: '5px 0 0',
+                  fontSize: '14px',
+                  color: '#666'
+                }}>
+                  Adicione à tela inicial do seu celular
+                </p>
               </div>
             </div>
-            <button
-              onClick={handleInstallClick}
-              style={{
-                backgroundColor: 'white',
-                color: '#1c70f2',
-                border: 'none',
-                borderRadius: '20px',
-                padding: '8px 16px',
-                fontSize: '14px',
-                fontWeight: '600',
-                cursor: 'pointer'
-              }}
-            >
-              Instalar
-            </button>
+            
+            {/* Benefícios */}
+            <div style={{
+              backgroundColor: '#f8f9fa',
+              borderRadius: '12px',
+              padding: '15px',
+              marginBottom: '20px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                <Icon icon="hugeicons:wifi-off" width="20" style={{ color: '#1c70f2' }} />
+                <span style={{ fontSize: '14px', color: '#333' }}>Acesse mesmo offline</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                <Icon icon="hugeicons:notification-03" width="20" style={{ color: '#1c70f2' }} />
+                <span style={{ fontSize: '14px', color: '#333' }}>Receba notificações importantes</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Icon icon="hugeicons:flash" width="20" style={{ color: '#1c70f2' }} />
+                <span style={{ fontSize: '14px', color: '#333' }}>Acesso rápido e direto</span>
+              </div>
+            </div>
+            
+            {/* Botões */}
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                onClick={handleDismissPrompt}
+                style={{
+                  flex: 1,
+                  padding: '14px',
+                  border: '1px solid #e0e0e0',
+                  borderRadius: '12px',
+                  backgroundColor: 'white',
+                  color: '#666',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                Agora não
+              </button>
+              <button
+                onClick={handleInstallClick}
+                style={{
+                  flex: 1,
+                  padding: '14px',
+                  border: 'none',
+                  borderRadius: '12px',
+                  backgroundColor: '#1c70f2',
+                  color: 'white',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}
+              >
+                <Icon icon="hugeicons:download-01" width="20" />
+                Instalar App
+              </button>
+            </div>
           </div>
-        )}
+        </div>
+        
+        <style jsx>{`
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+          }
+        `}</style>
+      </>
+    );
+  }
+  
+  // Botão pequeno para reabrir o prompt (mobile)
+  if ((platform === 'android' || platform === 'ios') && !showMobilePrompt && dismissedPrompt && !isInstalled) {
+    return (
+      <button
+        onClick={() => setShowMobilePrompt(true)}
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          width: '56px',
+          height: '56px',
+          borderRadius: '50%',
+          backgroundColor: '#1c70f2',
+          color: 'white',
+          border: 'none',
+          boxShadow: '0 4px 12px rgba(28, 112, 242, 0.3)',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 100
+        }}
+      >
+        <Icon icon="hugeicons:download-01" width="24" />
+      </button>
+    );
+  }
 
         {/* Botão flutuante para desktop */}
         {(platform === 'windows' || platform === 'mac' || platform === 'desktop') && (
