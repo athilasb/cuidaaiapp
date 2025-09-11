@@ -44,7 +44,7 @@ const InstallPWA = () => {
     }
     
     // Mostrar prompt para mobile após 3 segundos (se não foi dispensado)
-    if ((platform === 'android' || platform === 'ios') && !dismissedPrompt) {
+    if ((platform === 'android' || platform === 'ios') && !dismissedPrompt && !isInstalled) {
       setTimeout(() => {
         setShowMobilePrompt(true);
       }, 3000);
@@ -74,6 +74,7 @@ const InstallPWA = () => {
     const handleAppInstalled = () => {
       setIsInstalled(true);
       setShowInstallButton(false);
+      setShowMobilePrompt(false);
     };
 
     window.addEventListener('appinstalled', handleAppInstalled);
@@ -82,7 +83,7 @@ const InstallPWA = () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
-  }, [platform, dismissedPrompt]);
+  }, [platform, dismissedPrompt, isInstalled]);
 
   const handleDismissPrompt = () => {
     setShowMobilePrompt(false);
@@ -92,6 +93,7 @@ const InstallPWA = () => {
   
   const handleInstallClick = async () => {
     setShowMobilePrompt(false);
+    
     if (!deferredPrompt) {
       // Para iOS, mostrar instruções
       if (platform === 'ios') {
@@ -327,43 +329,42 @@ const InstallPWA = () => {
     );
   }
 
-        {/* Botão flutuante para desktop */}
-        {(platform === 'windows' || platform === 'mac' || platform === 'desktop') && (
-          <button
-            onClick={handleInstallClick}
-            style={{
-              position: 'fixed',
-              bottom: '20px',
-              left: '20px',
-              backgroundColor: '#1c70f2',
-              color: 'white',
-              border: 'none',
-              borderRadius: '50px',
-              padding: '12px 24px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              boxShadow: '0 4px 12px rgba(28, 112, 242, 0.3)',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: '600',
-              zIndex: 1000,
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'scale(1.05)';
-              e.currentTarget.style.boxShadow = '0 6px 16px rgba(28, 112, 242, 0.4)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(28, 112, 242, 0.3)';
-            }}
-          >
-            <Icon icon={getIcon()} width="20" />
-            {getInstallMessage()}
-          </button>
-        )}
-      </>
+  // Botão flutuante para desktop
+  if ((platform === 'windows' || platform === 'mac' || platform === 'desktop') && showInstallButton) {
+    return (
+      <button
+        onClick={handleInstallClick}
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          left: '20px',
+          backgroundColor: '#1c70f2',
+          color: 'white',
+          border: 'none',
+          borderRadius: '50px',
+          padding: '12px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          boxShadow: '0 4px 12px rgba(28, 112, 242, 0.3)',
+          cursor: 'pointer',
+          fontSize: '14px',
+          fontWeight: '600',
+          zIndex: 1000,
+          transition: 'all 0.3s ease'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'scale(1.05)';
+          e.currentTarget.style.boxShadow = '0 6px 16px rgba(28, 112, 242, 0.4)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'scale(1)';
+          e.currentTarget.style.boxShadow = '0 4px 12px rgba(28, 112, 242, 0.3)';
+        }}
+      >
+        <Icon icon={getIcon()} width="20" />
+        {getInstallMessage()}
+      </button>
     );
   }
 

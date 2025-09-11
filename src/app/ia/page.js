@@ -59,10 +59,11 @@ function listarMensagens({ role, content, data, loading }) {
 }
 
 function scrollToBottom(smooth = true) {
-  const scrollElement = document.scrollingElement || document.documentElement;
+  const contentDiv = document.querySelector('.content');
+  if (!contentDiv) return;
 
-  scrollElement.scrollTo({
-    top: scrollElement.scrollHeight,
+  contentDiv.scrollTo({
+    top: contentDiv.scrollHeight,
     behavior: smooth ? 'smooth' : 'auto'
   });
 }
@@ -118,18 +119,28 @@ const Chat = () => {
 
     // Detectar scroll para mostrar/ocultar botão de scroll para baixo
     const handleScroll = () => {
-      const scrollElement = document.scrollingElement || document.documentElement;
-      const scrollTop = scrollElement.scrollTop;
-      const scrollHeight = scrollElement.scrollHeight;
-      const clientHeight = scrollElement.clientHeight;
+      const contentDiv = document.querySelector('.content');
+      if (!contentDiv) return;
+      
+      const scrollTop = contentDiv.scrollTop;
+      const scrollHeight = contentDiv.scrollHeight;
+      const clientHeight = contentDiv.clientHeight;
       
       // Mostra o botão se não estiver no final da página (com margem de 100px)
       const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
       setShowScrollToBottom(!isNearBottom && scrollTop > 200);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const contentElement = document.querySelector('.content');
+    if (contentElement) {
+      contentElement.addEventListener('scroll', handleScroll);
+    }
+    
+    return () => {
+      if (contentElement) {
+        contentElement.removeEventListener('scroll', handleScroll);
+      }
+    };
   }, []);
   useEffect(() => {
     if (mensagensFiltradas.length > 0) {
@@ -397,19 +408,24 @@ const enviarMensagem = async (mensagemTexto) => {
             )}
           </div>
         </div>
+        
+        {/* Espaciador para o header fixo */}
+        <div style={{ height: '120px' }}></div>
 
         {/* Modal de Filtro de Data Rápido */}
         {showDatePicker && (
-          <div style={{
-            position: 'absolute',
-            top: '60px',
+          <div className="date-picker-modal" style={{
+            position: 'fixed',
+            top: '120px',
             right: '20px',
             backgroundColor: 'white',
             boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
             borderRadius: '8px',
             padding: '15px',
-            zIndex: 100,
-            minWidth: '200px'
+            zIndex: 2000,
+            minWidth: '200px',
+            maxHeight: '400px',
+            overflowY: 'auto'
           }}>
             <h4 style={{ 
               fontSize: '14px', 
@@ -454,7 +470,11 @@ const enviarMensagem = async (mensagemTexto) => {
           </div>
         )}
 
-        <div className="content">
+        <div className="content" style={{ 
+          flex: 1, 
+          overflowY: 'auto', 
+          position: 'relative'
+        }}>
           <div className="chat js-scrollChat">
             <div className="chat-message">
               {mensagensFiltradas.length === 0 && searchTerm ? (
@@ -482,7 +502,15 @@ const enviarMensagem = async (mensagemTexto) => {
               )}
             </div>
           </div>
-          <div className="input-ia">
+          <div className="input-ia" style={{ 
+            position: 'fixed', 
+            bottom: 0, 
+            left: 0, 
+            right: 0, 
+            backgroundColor: 'white',
+            borderTop: '1px solid #e0e0e0',
+            zIndex: 99
+          }}>
             <div className="input-area" style={{ position: 'relative' }}>
               <input 
                 type="text" 
@@ -585,6 +613,9 @@ const enviarMensagem = async (mensagemTexto) => {
       </div>
       
       <style jsx>{`
+        .date-picker-modal {
+          position: fixed !important;
+        }
         @keyframes fadeIn {
           from {
             opacity: 0;
