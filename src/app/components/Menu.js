@@ -132,14 +132,14 @@ const Menu = ({ isOpen, onClose, mensagens, onFilterMessages, onSearchMessages, 
           top: 0,
           left: isOpen ? 0 : '-300px',
           width: '300px',
-          height: '100vh',
+          height: '100dvh',
           backgroundColor: '#ffffff',
           boxShadow: '2px 0 10px rgba(0, 0, 0, 0.1)',
           transition: 'left 0.3s ease',
           zIndex: 1000,
           display: 'flex',
           flexDirection: 'column',
-          overflowY: 'auto'
+          overflow: 'hidden'
         }}
       >
         {/* Header do Menu */}
@@ -204,8 +204,16 @@ const Menu = ({ isOpen, onClose, mensagens, onFilterMessages, onSearchMessages, 
           </div>
         </div>
 
-        {/* Categorias */}
-        <div style={{ flex: 1, padding: '15px' }}>
+        {/* Área Scrollável */}
+        <div style={{ 
+          flex: 1, 
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          display: 'flex',
+          flexDirection: 'column'
+        }}>
+          {/* Categorias */}
+          <div style={{ padding: '15px' }}>
           <h4 style={{ 
             fontSize: '14px', 
             fontWeight: '600', 
@@ -258,10 +266,10 @@ const Menu = ({ isOpen, onClose, mensagens, onFilterMessages, onSearchMessages, 
               </button>
             ))}
           </div>
-        </div>
+          </div>
 
-        {/* Filtro de Data */}
-        <div style={{ padding: '15px' }}>
+          {/* Filtro de Data */}
+          <div style={{ padding: '15px' }}>
           <h4 style={{ 
             fontSize: '14px', 
             fontWeight: '600', 
@@ -369,12 +377,14 @@ const Menu = ({ isOpen, onClose, mensagens, onFilterMessages, onSearchMessages, 
               </div>
             </div>
           )}
+          </div>
         </div>
 
-        {/* Botão Sair */}
+        {/* Botão Sair - Fixo no final */}
         <div style={{ 
           padding: '15px',
-          borderTop: '1px solid #e0e0e0'
+          borderTop: '1px solid #e0e0e0',
+          flexShrink: 0
         }}>
           <button
             onClick={handleLogout}
