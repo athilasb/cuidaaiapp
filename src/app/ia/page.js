@@ -6,6 +6,8 @@ import Menu from '../components/Menu';
 //import InstallPWA from '../components/InstallPWA';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
+import { encryptDataClient } from '../utils/clientCrypto';
+import { sendMessage } from '../actions/sendMessage';
 
 function formatarData(dataString) {
   const agora = new Date();
@@ -59,11 +61,9 @@ function listarMensagens({ role, content, data, loading }) {
 }
 
 function scrollToBottom(smooth = true) {
-  const contentDiv = document.querySelector('.content');
-  if (!contentDiv) return;
-
-  contentDiv.scrollTo({
-    top: contentDiv.scrollHeight,
+  window.scrollTo({
+    top: document.body.scrollHeight,
+    left: 0,
     behavior: smooth ? 'smooth' : 'auto'
   });
 }
@@ -72,6 +72,7 @@ const Chat = () => {
   const [mensagens, setMensagens] = useState([]);
   const [mensagensFiltradas, setMensagensFiltradas] = useState([]);
   const inputRef = useRef(null);
+  const datePickerRef = useRef(null);
   const [loadingEnvio, setLoadingEnvio] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -106,7 +107,7 @@ const Chat = () => {
           setMensagensFiltradas(data.mensagens);
         }
           setTimeout(() => {
-          scrollToBottom();
+          scrollToBottom(false);
         },200)
         Swal.close();
       } catch (error) {
@@ -119,27 +120,34 @@ const Chat = () => {
 
     // Detectar scroll para mostrar/ocultar botão de scroll para baixo
     const handleScroll = () => {
-      const contentDiv = document.querySelector('.content');
-      if (!contentDiv) return;
-      
-      const scrollTop = contentDiv.scrollTop;
-      const scrollHeight = contentDiv.scrollHeight;
-      const clientHeight = contentDiv.clientHeight;
-      
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = window.innerHeight;
+
       // Mostra o botão se não estiver no final da página (com margem de 100px)
       const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
       setShowScrollToBottom(!isNearBottom && scrollTop > 200);
     };
 
-    const contentElement = document.querySelector('.content');
-    if (contentElement) {
-      contentElement.addEventListener('scroll', handleScroll);
-    }
+    // Adicionar evento de scroll na window
+    window.addEventListener('scroll', handleScroll);
+    
+    // Detector de clique fora do filtro de data
+    const handleClickOutside = (event) => {
+      if (datePickerRef.current && !datePickerRef.current.contains(event.target)) {
+        // Verifica se o clique não foi no botão do calendário
+        const calendarButton = event.target.closest('button[aria-label="date-filter"]');
+        if (!calendarButton) {
+          setShowDatePicker(false);
+        }
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
     
     return () => {
-      if (contentElement) {
-        contentElement.removeEventListener('scroll', handleScroll);
-      }
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
   useEffect(() => {
@@ -163,17 +171,17 @@ const enviarMensagem = async (mensagemTexto) => {
   // Scroll para baixo após adicionar mensagem
   setTimeout(() => scrollToBottom(), 100);
 
-  const formData = new FormData();
   const token = Cookies.get('auth_token') ?? "";
-  formData.append('token', token);
-  formData.append('mensage', mensagemTexto);
+  
+  // Criptografar dados antes de enviar
+  const encryptedData = encryptDataClient({
+    token: token,
+    mensagem: mensagemTexto,
+    timestamp: Date.now()
+  });
 
   try {
-    const response = await fetch('https://infoadmdev.infodental.dental/infoservices/cuidaai/ia.php', {
-      method: 'POST',
-      body: formData
-    });
-    const data = await response.json();
+    const data = await sendMessage(encryptedData);
 
     if (data.success && data.mensagem) {
       const respostaIA = {
@@ -196,9 +204,13 @@ const enviarMensagem = async (mensagemTexto) => {
         return novasMensagens;
       });
       
-      // Scroll para baixo e focar no input após receber resposta
+      // Scroll para baixo após receber resposta da IA
       setTimeout(() => {
         scrollToBottom();
+      }, 100);
+      
+      // Focar no input após receber resposta
+      setTimeout(() => {
         if (inputRef.current) {
           inputRef.current.focus();
         }
@@ -217,6 +229,11 @@ const enviarMensagem = async (mensagemTexto) => {
       novasMensagens.pop(); // remove loading
       return novasMensagens;
     });
+    
+    // Scroll para baixo mesmo em caso de erro
+    setTimeout(() => {
+      scrollToBottom();
+    }, 100);
   }
 
   setLoadingEnvio(false); // Libera o botão
@@ -348,6 +365,7 @@ const enviarMensagem = async (mensagemTexto) => {
             </button>
             <div className="title-header">Cada dia Importa</div>
             <button 
+              aria-label="date-filter"
               onClick={() => setShowDatePicker(!showDatePicker)}
               style={{ 
                 background: 'none', 
@@ -414,7 +432,7 @@ const enviarMensagem = async (mensagemTexto) => {
 
         {/* Modal de Filtro de Data Rápido */}
         {showDatePicker && (
-          <div className="date-picker-modal" style={{
+          <div ref={datePickerRef} className="date-picker-modal" style={{
             position: 'fixed',
             top: '120px',
             right: '20px',

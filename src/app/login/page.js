@@ -8,6 +8,7 @@ import Input from '../components/input';
 import { login } from '../actions/login';
 import Swal from 'sweetalert2';
 import { validarEmail } from '../utils/funcoes';
+import { encryptDataClient } from '../utils/clientCrypto';
 
 
 export default function LoginPage() {
@@ -23,7 +24,7 @@ export default function LoginPage() {
         Swal.fire({
           icon: 'error',
           title: 'Erro',
-          text: 'Email inválido',
+          text: 'Email inválido',
           confirmButtonColor: '#d33'
         });
         return;
@@ -36,7 +37,15 @@ export default function LoginPage() {
           Swal.showLoading();
         }
       });
-      const resultado = await login(email, senha);
+      
+      const encryptedCredentials = encryptDataClient({
+        email: email,
+        senha: senha,
+        timestamp: Date.now()
+      });
+      
+      const resultado = await login(encryptedCredentials);
+      
       if (resultado?.login?.success) {
         const token = resultado.login.token;
         Cookies.set('auth_token', token, { expires: 7 });
