@@ -31,7 +31,6 @@ export async function GET(request) {
       <text x="${size/2}" y="${size * 0.85}" 
             font-family="Arial, sans-serif" 
             font-size="${size * 0.08}" 
-            font-weight="600" 
             text-anchor="middle" 
             fill="white">CuidaAI</text>
     </svg>

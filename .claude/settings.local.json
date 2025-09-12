@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(del \"C:\\Users\\User\\Documents\\Projetos\\infodental\\cuidaaiapp\\src\\app\\utils\\crypto.js\")"
     ],
     "deny": [],
     "ask": []
