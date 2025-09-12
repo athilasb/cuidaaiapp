@@ -325,6 +325,7 @@ a {
   width: calc(100% - 40px);
   padding: 20px;
   background: #fff;
+      z-index: 99;
 }
 
 .input-ia{
