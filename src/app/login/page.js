@@ -49,7 +49,7 @@ export default function LoginPage() {
           text: resultado.error || 'Erro desconhecido',
           confirmButtonColor: '#d33'
         });
-         Swal.close();
+        
       }
     } catch (error) {
       Swal.fire({
