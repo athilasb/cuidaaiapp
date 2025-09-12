@@ -51,7 +51,6 @@ body {
 .btn-acao{
   color: #F57170;
   font-size: 14px;
-  font-weight: 600;
 }
 
 .w100 {
@@ -185,7 +184,6 @@ a {
   .title-header{
     color: #CDCDCD;
     font-size: 14px;
-    font-weight: 600;
   }
 
 
@@ -212,7 +210,6 @@ a {
     align-items: center;
     justify-content: center;
     font-size: 12px;
-    font-weight: bold;
     flex-shrink: 0;
     margin-right: 12px;
   }
@@ -223,7 +220,6 @@ a {
   }
 
   .box-notifications .text-content .title {
-    font-weight: bold;
     color: #f44336;
     /* vermelho */
     font-size: 15px;
@@ -325,7 +321,7 @@ a {
   width: calc(100% - 40px);
   padding: 20px;
   background: #fff;
-      z-index: 99;
+  z-index: 99;
 }
 
 .input-ia{
