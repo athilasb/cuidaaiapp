@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Icon } from '@iconify/react';
 import AuthGuard from '../components/AuthGuard';
 import Menu from '../components/Menu';
-import InstallPWA from '../components/InstallPWA';
+//import InstallPWA from '../components/InstallPWA';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
 
@@ -325,10 +325,10 @@ const enviarMensagem = async (mensagemTexto) => {
   const handleDateFilter = (dateFilter, customDateRange) => {
     handleFilterMessages(selectedCategory, searchTerm, dateFilter, customDateRange);
   };
-
+  /**    <InstallPWA /> */
   return (
     <AuthGuard>
-      <InstallPWA />
+  
       <Menu 
         isOpen={menuOpen}
         onClose={() => setMenuOpen(false)}

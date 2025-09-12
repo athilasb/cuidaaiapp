@@ -3,7 +3,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 
-const Input = ({ placeholder, children, type, value, onChange, name, ...rest }) => {
+const Input = ({ placeholder, children, type, value, onChange, name, autoComplete, ...rest }) => {
   const [senhaVisivel, setSenhaVisivel] = useState(false);
 
   const toggleSenha = () => {
@@ -21,6 +21,7 @@ const Input = ({ placeholder, children, type, value, onChange, name, ...rest }) 
         value={value}
         onChange={onChange}
         name={name}
+        autoComplete={autoComplete || (type === 'password' ? 'current-password' : type === 'email' ? 'email' : 'off')}
         {...rest}
       />
       {type === 'password' && (
@@ -45,6 +46,7 @@ Input.propTypes = {
   value: PropTypes.string,
   onChange: PropTypes.func,
   name: PropTypes.string,
+  autoComplete: PropTypes.string,
 };
 
 Input.defaultProps = {
@@ -52,6 +54,7 @@ Input.defaultProps = {
   value: '',
   onChange: () => {},
   name: '',
+  autoComplete: undefined,
 };
 
 export default Input;
