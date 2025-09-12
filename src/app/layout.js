@@ -15,13 +15,19 @@ export const metadata = {
   title: "Cuida AI",
   description: "Cuida AI - Seu assistente virtual de cuidado",
   manifest: "/manifest.json",
-  themeColor: "#1c70f2",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "CuidaAI"
   }
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#1c70f2'
 };
 
 export default function RootLayout({ children }) {

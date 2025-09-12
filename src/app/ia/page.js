@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Icon } from '@iconify/react';
 import AuthGuard from '../components/AuthGuard';
 import Menu from '../components/Menu';
-import InstallPWA from '../components/InstallPWA';
+//import InstallPWA from '../components/InstallPWA';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
 
@@ -325,10 +325,10 @@ const enviarMensagem = async (mensagemTexto) => {
   const handleDateFilter = (dateFilter, customDateRange) => {
     handleFilterMessages(selectedCategory, searchTerm, dateFilter, customDateRange);
   };
-
+  /**    <InstallPWA /> */
   return (
     <AuthGuard>
-      <InstallPWA />
+  
       <Menu 
         isOpen={menuOpen}
         onClose={() => setMenuOpen(false)}
@@ -507,8 +507,6 @@ const enviarMensagem = async (mensagemTexto) => {
             bottom: 0, 
             left: 0, 
             right: 0, 
-            backgroundColor: 'white',
-            borderTop: '1px solid #e0e0e0',
             zIndex: 99
           }}>
             <div className="input-area" style={{ position: 'relative' }}>
